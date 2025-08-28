@@ -28,8 +28,4 @@ if you are interested in these services please email contact@tempcatcher.com
 
 ## 2) Example code:
 ```
-from tempcatcher import *
-
-t = TempCatcher()
-print("email was spam" if t.check(input("Enter email to check: ") else "email was not spam")
 ```
