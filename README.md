@@ -40,7 +40,7 @@ match status:
     print("Email was not found in the tempcatcher data. (not spam)")
   case 2:
     print("Email was formatted incorrectly.")
-  case 3:
+  case _:
     print("How did we get here?")
 del t
 ```
