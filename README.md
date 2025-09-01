@@ -31,7 +31,7 @@ if you are interested in these services please email contact@tempcatcher.com
 from tempcatcher import *
 t = TempCatcher(update = 60) # update every 60 seconds
 
-status = t.check(input("Input email you would like to check: "))
+status = t.check(input("Input email you would like to check: "), dns = True)
 
 match status:
   case 0:
