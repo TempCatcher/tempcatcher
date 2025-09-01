@@ -40,6 +40,8 @@ match status:
     print("Email was not found in the tempcatcher data. (not spam)")
   case 2:
     print("Email was formatted incorrectly.")
+  case 3:
+    print(f"Email: `{email}` Could not find DNS MX record assocciated with domain")
   case _:
     print("How did we get here?")
 del t
