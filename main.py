@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import dns.resolver
 import os
 import requests
 import threading
@@ -11,8 +12,17 @@ class TempCatcher:
 
 	def _updateResources(self, key: str, value: str) -> None:
 		# save data to same directory as this program
-		r = self.session.get(value)
 		path = self.executionPath + f"/{key}.txt"
+
+		try:
+			r = self.session.get(value)
+		except:
+			if not os.path.exists(path):
+				raise FileNotFoundError(f"Request for resource: `{key}` at url: `{value}` failed and could not locate local data")
+			else:
+				with open(path, "r") as fp:
+					data = fp.read().splitlines()
+				return data
 
 		if not os.path.exists(path): # first run
 			self._updateLocalData(path, r.text)
@@ -50,33 +60,58 @@ class TempCatcher:
 
 		return [username, domain], 0
 
-	def check(self, email: str) -> bool:
+	def dnsCheck(self, domain: str) -> bool:
+		try:
+			if dns.resolver.resolve(domain, "MX"):
+				return True
+		except:
+			pass
+		return False
+
+	def check(self, email: str, dns: bool = False) -> bool:
+# return `0`	email found in data
+# return `1`	email not found in data
+# return `2`	invalid email
+# return `3`	optional dns check failed
 		while len(self.resources["emails"][1]) < 1 or len(self.resources["tlds"][1]) < 1:
 			#wait for resources to be created / updated
 			...
 
-		formattedEmailParts, status = self.validateEmail(email)
+		formattedEmailParts, status = self.validateEmail(email.strip())
 
 		if status == 1:
-			return 2
+			return None, 2
 
 		username, domain = formattedEmailParts
 
+		if dns:
+			if not self.dnsCheck(domain):
+				return None, 3
+
 		if domain == "gmail.com":
-			if (username + "@" + "googlemail.com") in self.resources["emails"][1]:
-				return 0
+			if (email := (username + "@" + "googlemail.com")) in self.resources["emails"][1]:
+				return email, 0
 
 		elif domain == "googlemail.com":
-			if (username + "@" + "gmail.com") in self.resources["emails"][1]:
-				return 0
+			if (email := (username + "@" + "gmail.com")) in self.resources["emails"][1]:
+				return email, 0
 
-		return 0 if (username + "@" + domain) in self.resources["emails"][1] else 1
+		if (email := (username + "@" + domain)) in self.resources["emails"][1]:
+			return email, 0
+		return email, 1
 
 	def __del__(self):
 		self.thread.join()
 
-	def __init__(self, update: int = 3600):
-		self.session = requests.Session()
+	def __init__(self,
+		session: requests.Session = requests.Session(), # pass headers, cookies and session
+		headers: dict = {},
+		cookies: dict = {},
+		update: int = 3600 # 1 hour
+	):
+		self.session = session
+		self.session.cookies.update(cookies)
+		self.session.headers.update(headers)
 		self.update = update
 
 		self.executionPath = "/".join(__file__.split("/")[:-1])
@@ -90,15 +125,17 @@ class TempCatcher:
 if __name__ == "__main__":
 	t = TempCatcher()
 
-	status = t.check(input("Input email you would like to check: "))
+	email, status = t.check(input("Input email you would like to check: "), dns = False)
 
 	match status:
 		case 0:
-			print("Email was found in the tempcatcher data. (spam)")
+			print(f"Email: `{email}` was found in the tempcatcher data. (spam)")
 		case 1:
-			print("Email was not found in the tempcatcher data. (not spam)")
+			print(f"Email: `{email}` was not found in the tempcatcher data. (not spam)")
 		case 2:
-			print("Email was formatted incorrectly.")
+			print(f"Email was formatted incorrectly.")
 		case 3:
-			print("How did we get here?")
+			print(f"Email: `{email}` Could not find DNS MX record assocciated with domain")
+		case _:
+			print(f"How did we get here?")
 	del t
