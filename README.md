@@ -28,23 +28,22 @@ if you are interested in these services please email contact@tempcatcher.com
 
 ## 2) Example code:
 ```python
-from tempcatcher import *
-t = TempCatcher(update = 60) # update every 60 seconds
+t = TempCatcher()
 
-status = t.check(input("Input email you would like to check: "), dns = True)
+email, status = t.check(input("Input email you would like to check: "), dns = True)
 
 match status:
-  case 0:
-    print("Email was found in the tempcatcher data. (spam)")
-  case 1:
-    print("Email was not found in the tempcatcher data. (not spam)")
-  case 2:
-    print("Email was formatted incorrectly.")
-  case 3:
-    print(f"Email: `{email}` Could not find DNS MX record associated with domain")
-  case _:
-    print("How did we get here?")
-del t
+    case 0:
+        print(f"Email: `{email}` was found in the tempcatcher data. (spam)")
+    case 1:
+        print(f"Email: `{email}` was not found in the tempcatcher data. (not spam)")
+    case 2:
+        print(f"Email was formatted incorrectly.")
+    case 3:
+        print(f"Email: `{email}` Could not find DNS MX record assocciated with domain")
+    case _:
+        print(f"How did we get here?")
+del t # join update thread
 ```
 
 # 3) Known Issues.
