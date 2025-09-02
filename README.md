@@ -1,10 +1,10 @@
-# TempCatcher, indentify spam emails on clean domains.
+# TempCatcher, identify spam emails on clean domains.
 
 ## What is TempCatcher?
 TempCatcher is a service which provides intelligence on temporary email addresses.
 
 ## Why use TempCatcher? 
-Our service is the logical next step If you have exhausted all other solutions in your battle against spam (domain whitelisting / blacklisting).
+Our service is the logical next step If you have exhausted all other solutions in your battle against spam (domain white-listing / blacklisting).
 
 ## How do i use TempCatcher?
 Please refer to [quick start guide](https://github.com/tempcacher/tempcatcher/README.md#quick-start-guide)
@@ -41,7 +41,7 @@ match status:
   case 2:
     print("Email was formatted incorrectly.")
   case 3:
-    print(f"Email: `{email}` Could not find DNS MX record assocciated with domain")
+    print(f"Email: `{email}` Could not find DNS MX record associated with domain")
   case _:
     print("How did we get here?")
 del t
@@ -52,4 +52,4 @@ On windows / NT you may get a `UnicodeDecodeError` when trying to import tempcat
 
 the quickest solution is to add `-X utf8` to your command arguments,
 
-but here is a [link](https://github.com/pallets/click/issues/2121#issuecomment-1691716436) to more indepth analysis / help.
+but here is a [link](https://github.com/pallets/click/issues/2121#issuecomment-1691716436) to more in-depth analysis / help.
