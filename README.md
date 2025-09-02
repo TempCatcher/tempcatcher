@@ -28,6 +28,7 @@ if you are interested in these services please email contact@tempcatcher.com
 
 ## 2) Example code:
 ```python
+from tempcatcher import *
 t = TempCatcher()
 
 email, status = t.check(input("Input email you would like to check: "), dns = True)
