@@ -46,3 +46,10 @@ match status:
     print("How did we get here?")
 del t
 ```
+
+# 3) Known Issues.
+On windows / NT you may get a `UnicodeDecodeError` when trying to import tempcatcher,
+
+the quickest solution is to add `-X utf8` to your command arguments,
+
+but here is a [link](https://github.com/pallets/click/issues/2121#issuecomment-1691716436) to more indepth analysis / help.
